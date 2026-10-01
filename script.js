@@ -6,7 +6,12 @@ const runnerWidth = 40;
 const runnerHeight = 50;
 const runnerX = 100;
 const groundY = canvas.height - groundHeight;
-const runnerY = groundY - runnerHeight;
+const runnerGroundY = groundY - runnerHeight;
+let runnerY = runnerGroundY;
+let runnerSpeedY = 0;
+const gravity = 0.6;
+const jumpPower = -12;
+
 // Track
 ctx.fillStyle = "tomato";
 ctx.fillRect(0, groundY, canvas.width, groundHeight);
@@ -32,6 +37,13 @@ function gameLoop() {
     if(hurdleX + hurdleWidth <= 0){
         hurdleX = canvas.width;
     }
+    runnerSpeedY = runnerSpeedY + gravity;
+    runnerY = runnerY + runnerSpeedY;
+    if (runnerY >= runnerGroundY ) {
+        runnerY = runnerGroundY;
+        runnerSpeedY = 0;
+    }
+
 
     // 3. Draw hurdle
     ctx.fillStyle = "red";          
@@ -47,3 +59,11 @@ function gameLoop() {
 }
 
 requestAnimationFrame(gameLoop);
+
+document.addEventListener("keydown", function (event) {
+    if (event.code === "Space" && runnerY >= runnerGroundY ) {
+        event.preventDefault();
+        runnerSpeedY = jumpPower;
+    }
+
+});
