@@ -18,24 +18,30 @@ ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight);
 // Add Hurdles
 const hurdleHeight = 50;
 let hurdleWidth = 20;
-let hurdleSpeed = 0.90;
-let hurdleX = canvas.width - hurdleWidth;
+let hurdleSpeed = 5;
+let hurdleX = canvas.width;
 let hurdleY = groundY - hurdleHeight;
 
 
 function gameLoop() {
+    // 1. Clear
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-    ctx.clearRect(0, 0 , canvas.width, canvas.height); // 1. Clear
-    
+    // 2. Update
     hurdleX = hurdleX - hurdleSpeed;
-    ctx.fillStyle = "red";            
-    ctx.fillRect(hurdleX, hurdleY, hurdleWidth, hurdleHeight);  // 2. Update
+    if(hurdleX + hurdleWidth <= 0){
+        hurdleX = canvas.width;
+    }
 
+    // 3. Draw hurdle
+    ctx.fillStyle = "red";          
+    ctx.fillRect(hurdleX, hurdleY, hurdleWidth, hurdleHeight); 
+    // 3. Draw track
     ctx.fillStyle = "tomato"; 
-    ctx.fillRect(0, groundY, canvas.width, groundHeight); // 3. Draw
-
-    ctx.fillStyle = "black";
-    ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight); // 3. Draw 
+    ctx.fillRect(0, groundY, canvas.width, groundHeight); 
+    // 3. Draw runner
+    ctx.fillStyle = "black"; 
+    ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight); 
 
     requestAnimationFrame(gameLoop);
 }
