@@ -6,7 +6,7 @@ Built from scratch in vanilla JavaScript with the HTML Canvas API, without any g
 
 ## Play online
 
-Coming soon.
+[Play Hurdle Runner](https://johnbnrd.github.io/hurdle-runner/)
 
 ## How to play
 
@@ -31,8 +31,6 @@ Coming soon.
 ## Run locally
 
 Clone the repository, then open `index.html` in your browser.
-
-## What I learned
 
 ## What I learned
 
