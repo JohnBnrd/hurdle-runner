@@ -23,86 +23,89 @@ let hurdleX = canvas.width;
 const hurdleY = groundY - hurdleHeight;
 
 function gameLoop() {
+  // 1. Clear
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Clear
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    // 2. Update
-    if (!isGameOver) {
-        
-        score += 1;
-    
-        hurdleX = hurdleX - hurdleSpeed;
-        if(hurdleX + hurdleWidth <= 0){
-            hurdleX = canvas.width;
-        }
+  // 2. Update
+  if (!isGameOver) {
+    score += 1;
 
-        runnerSpeedY = runnerSpeedY + gravity;
-        runnerY = runnerY + runnerSpeedY;
-        if (runnerY >= runnerGroundY ) {
-            runnerY = runnerGroundY;
-            runnerSpeedY = 0;
-        }
-
-        if (runnerX + runnerWidth >= hurdleX && 
-            runnerX <= hurdleX + hurdleWidth &&
-            runnerY + runnerHeight >= hurdleY &&
-            runnerY <= hurdleY + hurdleHeight)
-        {
-            isGameOver = true; 
-        }
+    hurdleX = hurdleX - hurdleSpeed;
+    if (hurdleX + hurdleWidth <= 0) {
+      hurdleX = canvas.width;
     }
-    // 3. Draw
-    // Hurdle
-    ctx.fillStyle = "red";          
-    ctx.fillRect(hurdleX, hurdleY, hurdleWidth, hurdleHeight); 
-    
-    // Track
-    ctx.fillStyle = "tomato"; 
-    ctx.fillRect(0, groundY, canvas.width, groundHeight); 
-    
-    // Runner
-    ctx.fillStyle = "black"; 
-    ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight); 
 
-    // Score
-    ctx.fillStyle = "green";
-    ctx.textAlign = "left";
+    runnerSpeedY = runnerSpeedY + gravity;
+    runnerY = runnerY + runnerSpeedY;
+    if (runnerY >= runnerGroundY) {
+      runnerY = runnerGroundY;
+      runnerSpeedY = 0;
+    }
+
+    if (
+      runnerX + runnerWidth >= hurdleX &&
+      runnerX <= hurdleX + hurdleWidth &&
+      runnerY + runnerHeight >= hurdleY &&
+      runnerY <= hurdleY + hurdleHeight
+    ) {
+      isGameOver = true;
+    }
+  }
+  // 3. Draw
+
+  // Hurdle
+  ctx.fillStyle = "red";
+  ctx.fillRect(hurdleX, hurdleY, hurdleWidth, hurdleHeight);
+
+  // Track
+  ctx.fillStyle = "tomato";
+  ctx.fillRect(0, groundY, canvas.width, groundHeight);
+
+  // Runner
+  ctx.fillStyle = "black";
+  ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight);
+
+  // Score
+  ctx.fillStyle = "green";
+  ctx.textAlign = "left";
+  ctx.font = "15px Arial";
+  ctx.fillText("Score: " + score, 10, 20);
+
+  // Game Over
+  if (isGameOver) {
+    ctx.fillStyle = "red";
+    ctx.font = "32px Arial";
+    ctx.textAlign = "center";
+
+    ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
+
     ctx.font = "15px Arial";
-    ctx.fillText("Score: " + score, 10, 20);
-
-    // Game Over
-    if (isGameOver){
-        ctx.fillStyle = "red";
-        ctx.font = "32px Arial";
-        ctx.textAlign = "center";
-
-        ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2);
-
-        ctx.font = "15px Arial";
-        ctx.fillText("Press Space to restart", canvas.width / 2, canvas.height / 2 + 40);
-    }
-    requestAnimationFrame(gameLoop);
-} 
+    ctx.fillText(
+      "Press Space to restart",
+      canvas.width / 2,
+      canvas.height / 2 + 40,
+    );
+  }
+  requestAnimationFrame(gameLoop);
+}
 requestAnimationFrame(gameLoop);
 
 function resetGame() {
-    runnerY = runnerGroundY;
-    runnerSpeedY = 0;
-    hurdleX = canvas.width;
-    isGameOver = false;
-    score = 0;
+  runnerY = runnerGroundY;
+  runnerSpeedY = 0;
+  hurdleX = canvas.width;
+  isGameOver = false;
+  score = 0;
 }
 
 document.addEventListener("keydown", function (event) {
-    if (event.code === "Space") {
-        event.preventDefault();
+  if (event.code === "Space") {
+    event.preventDefault();
 
-        
-        if(isGameOver){
-            resetGame();
-        }else if (runnerY === runnerGroundY){
-            runnerSpeedY = jumpPower;
-        }
+    if (isGameOver) {
+      resetGame();
+    } else if (runnerY === runnerGroundY) {
+      runnerSpeedY = jumpPower;
     }
+  }
 });
