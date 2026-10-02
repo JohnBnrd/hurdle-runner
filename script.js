@@ -18,30 +18,37 @@ const hurdleWidth = 20;
 const hurdleSpeed = 5;
 let hurdleX = canvas.width;
 const hurdleY = groundY - hurdleHeight;
+let isGameOver = false;
 
 function gameLoop() {
+
     // 1. Clear
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
     // 2. Update
-    hurdleX = hurdleX - hurdleSpeed;
-    if(hurdleX + hurdleWidth <= 0){
-        hurdleX = canvas.width;
-    }
-    runnerSpeedY = runnerSpeedY + gravity;
-    runnerY = runnerY + runnerSpeedY;
-    if (runnerY >= runnerGroundY ) {
-        runnerY = runnerGroundY;
-        runnerSpeedY = 0;
-    }
-    if (runnerX + runnerWidth >= hurdleX && 
-    runnerX <= hurdleX + hurdleWidth &&
-    runnerY + runnerHeight >= hurdleY &&
-    runnerY <= hurdleY + hurdleHeight)
-    {
-    console.log("Collision !");
-    }
+    if (!isGameOver) {
     
+        hurdleX = hurdleX - hurdleSpeed;
+        if(hurdleX + hurdleWidth <= 0){
+            hurdleX = canvas.width;
+        }
+
+        runnerSpeedY = runnerSpeedY + gravity;
+        runnerY = runnerY + runnerSpeedY;
+        if (runnerY >= runnerGroundY ) {
+            runnerY = runnerGroundY;
+            runnerSpeedY = 0;
+        }
+
+        if (runnerX + runnerWidth >= hurdleX && 
+            runnerX <= hurdleX + hurdleWidth &&
+            runnerY + runnerHeight >= hurdleY &&
+            runnerY <= hurdleY + hurdleHeight)
+        {
+            isGameOver = true; 
+        }
+    }
+
     // 3. Draw
     // Hurdle
     ctx.fillStyle = "red";          
@@ -56,14 +63,35 @@ function gameLoop() {
     ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight); 
     
     requestAnimationFrame(gameLoop);
-}
+
+    if (isGameOver){
+        ctx.fillStyle = "red";
+        ctx.font = "32px Arial";
+        ctx.textAlign = "center";
+
+        ctx.fillText("GAME OVER ", canvas.width / 2, canvas.height / 2);
+
+        ctx.font = "15px Arial";
+        ctx.fillText("Press Space to restart", canvas.width / 2, canvas.height / 2 + 40);
+    }
+} 
 
 requestAnimationFrame(gameLoop);
+
+function resetGame() {
+    runnerY = runnerGroundY;
+    runnerSpeedY = 0;
+    hurdleX = canvas.width; // Ou la position X de départ de ta haie
+    isGameOver = false;
+}
 
 document.addEventListener("keydown", function (event) {
     if (event.code === "Space") {
         event.preventDefault();
-        if (runnerY >= runnerGroundY){
+
+        if(isGameOver){
+            resetGame();
+        }if (runnerY === runnerGroundY){
             runnerSpeedY = jumpPower;
         }
     }
