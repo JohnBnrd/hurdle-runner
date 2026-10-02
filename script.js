@@ -2,25 +2,30 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 const groundHeight = 40;
+const groundY = canvas.height - groundHeight;
+
 const runnerWidth = 40;
 const runnerHeight = 50;
 const runnerX = 100;
-const groundY = canvas.height - groundHeight;
 const runnerGroundY = groundY - runnerHeight;
 let runnerY = runnerGroundY;
 let runnerSpeedY = 0;
+
 const gravity = 0.6;
 const jumpPower = -12;
 
 let isGameOver = false;
 let score = 0;
 
-// Add Hurdles
+// Hurdles
 const hurdleHeight = 50;
 const hurdleWidth = 20;
-const hurdleSpeed = 5;
-let hurdleX = canvas.width;
+const hurdleInitialSpeed = 5;
+const hurdleAcceleration = 0.5;
 const hurdleY = groundY - hurdleHeight;
+const hurdleMaxSpeed = 60;
+let hurdleSpeed = hurdleInitialSpeed;
+let hurdleX = canvas.width;
 
 function gameLoop() {
   // 1. Clear
@@ -33,6 +38,10 @@ function gameLoop() {
     hurdleX = hurdleX - hurdleSpeed;
     if (hurdleX + hurdleWidth <= 0) {
       hurdleX = canvas.width;
+
+      if (hurdleSpeed < hurdleMaxSpeed) {
+        hurdleSpeed += hurdleAcceleration;
+      }
     }
 
     runnerSpeedY = runnerSpeedY + gravity;
@@ -96,6 +105,7 @@ function resetGame() {
   hurdleX = canvas.width;
   isGameOver = false;
   score = 0;
+  hurdleSpeed = hurdleInitialSpeed;
 }
 
 document.addEventListener("keydown", function (event) {
