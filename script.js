@@ -12,21 +12,12 @@ let runnerSpeedY = 0;
 const gravity = 0.6;
 const jumpPower = -12;
 
-// Track
-ctx.fillStyle = "tomato";
-ctx.fillRect(0, groundY, canvas.width, groundHeight);
-
-// Runner
-ctx.fillStyle = "black";
-ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight);
-
 // Add Hurdles
 const hurdleHeight = 50;
-let hurdleWidth = 20;
-let hurdleSpeed = 5;
+const hurdleWidth = 20;
+const hurdleSpeed = 5;
 let hurdleX = canvas.width;
-let hurdleY = groundY - hurdleHeight;
-
+const hurdleY = groundY - hurdleHeight;
 
 function gameLoop() {
     // 1. Clear
@@ -43,27 +34,37 @@ function gameLoop() {
         runnerY = runnerGroundY;
         runnerSpeedY = 0;
     }
-
-
-    // 3. Draw hurdle
+    if (runnerX + runnerWidth >= hurdleX && 
+    runnerX <= hurdleX + hurdleWidth &&
+    runnerY + runnerHeight >= hurdleY &&
+    runnerY <= hurdleY + hurdleHeight)
+    {
+    console.log("Collision !");
+    }
+    
+    // 3. Draw
+    // Hurdle
     ctx.fillStyle = "red";          
     ctx.fillRect(hurdleX, hurdleY, hurdleWidth, hurdleHeight); 
-    // 3. Draw track
+    
+    // Track
     ctx.fillStyle = "tomato"; 
     ctx.fillRect(0, groundY, canvas.width, groundHeight); 
-    // 3. Draw runner
+    
+    // Runner
     ctx.fillStyle = "black"; 
     ctx.fillRect(runnerX, runnerY, runnerWidth, runnerHeight); 
-
+    
     requestAnimationFrame(gameLoop);
 }
 
 requestAnimationFrame(gameLoop);
 
 document.addEventListener("keydown", function (event) {
-    if (event.code === "Space" && runnerY >= runnerGroundY ) {
+    if (event.code === "Space") {
         event.preventDefault();
-        runnerSpeedY = jumpPower;
+        if (runnerY >= runnerGroundY){
+            runnerSpeedY = jumpPower;
+        }
     }
-
 });
