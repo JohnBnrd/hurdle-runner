@@ -1,8 +1,10 @@
-const trackHeight = 60;
 const cloudsSpeedFactor = 0.25;
 const mountainsSpeedFactor = 0.5;
 const hillsSpeedFactor = 0.75;
 const trackSpeedFactor = 1;
+
+const trackHeight = 60;
+const runnerTrackOffet = 25;
 
 let gameSpeed = 1;
 class GameScene extends Phaser.Scene {
@@ -17,6 +19,11 @@ class GameScene extends Phaser.Scene {
     this.load.image("mountains", "assets/mountains.png");
     this.load.image("hills", "assets/hills.png");
     this.load.image("track", "assets/track.png");
+
+    this.load.spritesheet("runner", "assets/runner.png", {
+      frameWidth: 96,
+      frameHeight: 128,
+    });
   }
 
   create() {
@@ -43,6 +50,20 @@ class GameScene extends Phaser.Scene {
         "track",
       )
       .setOrigin(0, 0);
+
+    this.anims.create({
+      key: "run",
+      frames: this.anims.generateFrameNumbers("runner", { start: 10, end: 14 }),
+      frameRate: 10,
+      repeat: -1,
+    });
+
+    const runnerX = 100;
+    const runnerY = this.scale.height - trackHeight + runnerTrackOffet;
+    this.runner = this.add
+      .sprite(runnerX, runnerY, "runner")
+      .setOrigin(0.5, 1)
+      .play("run");
   }
 
   update() {
