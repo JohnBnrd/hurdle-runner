@@ -9,6 +9,10 @@ const groundHeight = 20;
 
 const jumpPower = -440;
 
+const fireBallHeightOffset = 40;
+const fireBallWidth = 72;
+const fireBallSpeed = -250;
+
 let gameSpeed = 1;
 class GameScene extends Phaser.Scene {
   constructor() {
@@ -26,6 +30,11 @@ class GameScene extends Phaser.Scene {
     this.load.spritesheet("runner", "assets/runner.png", {
       frameWidth: 96,
       frameHeight: 128,
+    });
+
+    this.load.spritesheet("fireball", "assets/fireball.png", {
+      frameWidth: 72,
+      frameHeight: 44,
     });
   }
 
@@ -86,6 +95,26 @@ class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.runner, floor);
 
     this.spaceKey = this.input.keyboard.addKey("SPACE");
+
+    this.anims.create({
+      key: "burn",
+      frames: this.anims.generateFrameNumbers("fireball", {
+        start: 0,
+        end: 15,
+      }),
+      frameRate: 15,
+      repeat: -1,
+    });
+
+    const fireBallY = runnerY - fireBallHeightOffset;
+    const fireBallX = this.scale.width + fireBallWidth / 2;
+    this.fireball = this.physics.add
+      .sprite(fireBallX, fireBallY, "fireball")
+      .setOrigin(0.5, 0.5)
+      .setVelocityX(fireBallSpeed)
+      .play("burn");
+
+    this.fireball.body.setAllowGravity(false);
   }
 
   update() {
