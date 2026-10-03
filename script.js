@@ -4,7 +4,10 @@ const hillsSpeedFactor = 0.75;
 const trackSpeedFactor = 1;
 
 const trackHeight = 60;
-const runnerTrackOffet = 25;
+const runnerTrackOffset = 25;
+const groundHeight = 20;
+
+const jumpPower = -440;
 
 let gameSpeed = 1;
 class GameScene extends Phaser.Scene {
@@ -28,6 +31,7 @@ class GameScene extends Phaser.Scene {
 
   create() {
     // 2. Create game objects
+    // 1. BACKGROUND & PARALLAX LAYERS (rendered back to front)
     this.add.image(0, 0, "sky").setOrigin(0, 0);
     this.cloudsLayer = this.add
       .tileSprite(0, 0, this.scale.width, this.scale.height, "clouds")
@@ -41,6 +45,7 @@ class GameScene extends Phaser.Scene {
       .tileSprite(0, 0, this.scale.width, this.scale.height, "hills")
       .setOrigin(0, 0);
 
+    // Foreground track
     this.trackLayer = this.add
       .tileSprite(
         0,
@@ -58,12 +63,29 @@ class GameScene extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: "jump",
+      frames: this.anims.generateFrameNumbers("runner", { start: 15, end: 19 }),
+      frameRate: 10,
+      repeat: 0,
+    });
+
     const runnerX = 100;
-    const runnerY = this.scale.height - trackHeight + runnerTrackOffet;
-    this.runner = this.add
+    const runnerY = this.scale.height - trackHeight + runnerTrackOffset;
+    this.runner = this.physics.add
       .sprite(runnerX, runnerY, "runner")
       .setOrigin(0.5, 1)
       .play("run");
+
+    const floor = this.add
+      .rectangle(0, runnerY, this.scale.width, groundHeight)
+      .setOrigin(0, 0);
+
+    this.physics.add.existing(floor, true);
+
+    this.physics.add.collider(this.runner, floor);
+
+    this.spaceKey = this.input.keyboard.addKey("SPACE");
   }
 
   update() {
@@ -72,6 +94,16 @@ class GameScene extends Phaser.Scene {
     this.mountainsLayer.tilePositionX += gameSpeed * mountainsSpeedFactor;
     this.hillsLayer.tilePositionX += gameSpeed * hillsSpeedFactor;
     this.trackLayer.tilePositionX += gameSpeed * trackSpeedFactor;
+
+    if (
+      Phaser.Input.Keyboard.JustDown(this.spaceKey) &&
+      this.runner.body.touching.down
+    ) {
+      this.runner.setVelocityY(jumpPower);
+      this.runner.play("jump");
+    } else if (this.runner.body.touching.down) {
+      this.runner.play("run", true);
+    }
   }
 }
 
@@ -80,6 +112,13 @@ const config = {
   width: 800,
   height: 300,
   pixelArt: true,
+  physics: {
+    default: "arcade",
+    arcade: {
+      gravity: { y: 1000 },
+      debug: true,
+    },
+  },
   scene: GameScene,
 };
 
